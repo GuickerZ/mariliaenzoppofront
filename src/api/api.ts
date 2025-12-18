@@ -1,9 +1,14 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const baseURL = import.meta.env.VITE_API_URL || '';
+
+if (!baseURL) {
+    console.error('❌ ERRO: VITE_API_URL não está configurada! As requisições à API não funcionarão.');
+    console.error('📝 Configure a variável de ambiente VITE_API_URL no painel da Vercel ou no arquivo .env');
+}
 
 const api = axios.create({
-    baseURL: baseURL,
+    baseURL: baseURL || 'http://localhost:3333',
 })
 
 api.interceptors.request.use(
