@@ -14,7 +14,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps) {
-  const { isLimitReached, pauseSession } = useTimeTracking();
+  const { isLimitReached, dismissLimitWarning } = useTimeTracking();
   const { user } = useUser();
 
   return (
@@ -44,7 +44,7 @@ export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={pauseSession}
+                  onClick={dismissLimitWarning}
                   className="w-full h-12 border-border/50 hover:bg-muted/50"
                 >
                   Continuar mesmo assim

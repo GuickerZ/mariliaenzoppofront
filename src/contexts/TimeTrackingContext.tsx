@@ -14,6 +14,7 @@ interface TimeTrackingContextType {
   pauseSession: () => void;
   resetDaily: () => void;
   updateDailyLimit: (limit: number) => void;
+  dismissLimitWarning: () => void;
 }
 
 const TimeTrackingContext =
@@ -28,9 +29,10 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
   const [lastActiveDate, setLastActiveDate] = useState(
     new Date().toDateString()
   );
+  const [limitDismissed, setLimitDismissed] = useState(false);
 
   const limitInSeconds = dailyLimit * 60;
-  const isLimitReached = timeSpent >= limitInSeconds;
+  const isLimitReached = timeSpent >= limitInSeconds && !limitDismissed;
 
   /* =====================
      RESTAURA AO CARREGAR
@@ -110,8 +112,15 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
           if (!isLimitReached) setIsActive(true);
         },
         pauseSession: () => setIsActive(false),
-        resetDaily: () => setTimeSpent(0),
-        updateDailyLimit: setDailyLimit,
+        resetDaily: () => {
+          setTimeSpent(0);
+          setLimitDismissed(false);
+        },
+        updateDailyLimit: (limit: number) => {
+          setDailyLimit(limit);
+          setLimitDismissed(false);
+        },
+        dismissLimitWarning: () => setLimitDismissed(true),
       }}
     >
       {children}
