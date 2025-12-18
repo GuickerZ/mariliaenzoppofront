@@ -91,7 +91,7 @@ export default function Settings() {
   }
 
   return (
-    <MainLayout showTimeTracker={false}>
+    <MainLayout showTimeTracker={false} allowWhenLimitReached={true}>
       <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3 sm:gap-4">

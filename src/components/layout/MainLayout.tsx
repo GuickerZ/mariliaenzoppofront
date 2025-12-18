@@ -11,9 +11,10 @@ import { Link } from "react-router-dom";
 interface MainLayoutProps {
   children: ReactNode;
   showTimeTracker?: boolean;
+  allowWhenLimitReached?: boolean;
 }
 
-export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps) {
+export function MainLayout({ children, showTimeTracker = true, allowWhenLimitReached = false }: MainLayoutProps) {
   const { isLimitReached, timeUntilReset } = useTimeTracking();
 
   // Formatar tempo restante
@@ -30,7 +31,7 @@ export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps
       <Header />
       
       {/* Limit Reached Overlay */}
-      {isLimitReached && (
+      {isLimitReached && !allowWhenLimitReached && (
         <div className="fixed inset-0 bg-background/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <Card className="max-w-md mx-auto glass-card border-destructive/30 animate-scale-in">
             <CardContent className="p-8 text-center space-y-6">
