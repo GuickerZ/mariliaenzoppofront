@@ -55,16 +55,16 @@ export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps
         </div>
       )}
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+      <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
             {children}
           </div>
           
-          {/* Sidebar */}
+          {/* Sidebar - Hidden on mobile */}
           {showTimeTracker && user && (
-            <div className="lg:col-span-1 space-y-6">
+            <div className="hidden lg:block lg:col-span-1 space-y-6">
               <div className="sticky top-24 space-y-6">
                 <TimeTracker 
                   onLimitReached={() => {

@@ -62,7 +62,7 @@ export default function Communities() {
 
   return (
     <MainLayout>
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
@@ -201,34 +201,34 @@ export default function Communities() {
         </Card>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Users className="h-5 w-5 sm:h-8 sm:w-8 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-lg sm:text-2xl font-bold">
                 {communities.reduce((sum: number, c: Community) => sum + (c.membersCount ?? 0), 0)}
               </div>
-              <div className="text-sm text-muted-foreground">membros</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">membros</div>
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="p-4 text-center">
-              <MessageSquare className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <MessageSquare className="h-5 w-5 sm:h-8 sm:w-8 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-lg sm:text-2xl font-bold">
                 {communities.reduce((sum: number, c: Community) => sum + (c.discussionsCount ?? 0), 0)}
               </div>
-              <div className="text-sm text-muted-foreground">respostas</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">respostas</div>
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="p-4 text-center">
-              <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <TrendingUp className="h-5 w-5 sm:h-8 sm:w-8 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-lg sm:text-2xl font-bold">
                 {communities.reduce((sum: number, c: Community) => sum + (c.postsCount ?? 0), 0)}
               </div>
-              <div className="text-sm text-muted-foreground">reflexões</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">reflexões</div>
             </CardContent>
           </Card>
         </div>
@@ -237,7 +237,7 @@ export default function Communities() {
         {joinedCommunities.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Suas comunidades</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {joinedCommunities.map((community, index) => (
                 <CommunityCard
                   key={index}
@@ -270,7 +270,7 @@ export default function Communities() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredCommunities.map((community: any, index: number) => (
                 <CommunityCard
                   key={index}

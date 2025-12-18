@@ -94,7 +94,7 @@ export default function Profile() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Profile Header */}
         <Card className="glass-card border-border/30 overflow-hidden">
           <CardContent className="p-6 md:p-8">
@@ -138,7 +138,7 @@ export default function Profile() {
         </Card>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
           <Card className="glass-card border-border/30">
             <CardContent className="p-4 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">

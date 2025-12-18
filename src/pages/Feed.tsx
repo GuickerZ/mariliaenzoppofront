@@ -183,38 +183,38 @@ export default function Feed() {
         </Card>
 
         {/* Feed Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
-              <div className="text-lg font-semibold">{sortedPosts.length}</div>
-              <div className="text-sm text-muted-foreground">reflexões disponíveis</div>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-base sm:text-lg font-semibold">{sortedPosts.length}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">reflexões</div>
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="p-4 text-center">
-              <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
-              <div className="text-lg font-semibold">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-base sm:text-lg font-semibold">
                 {sortedPosts.reduce((sum, post) => sum + post.readTime, 0)}min
               </div>
-              <div className="text-sm text-muted-foreground">tempo total de leitura</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">leitura</div>
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="p-4 text-center">
-              <Users className="h-6 w-6 text-primary mx-auto mb-2" />
-              <div className="text-lg font-semibold">
+          <Card className="glass-card">
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary mx-auto mb-1 sm:mb-2" />
+              <div className="text-base sm:text-lg font-semibold">
                 {new Set(sortedPosts.map(post => post.author)).size}
               </div>
-              <div className="text-sm text-muted-foreground">autores únicos</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">autores</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Posts Feed */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {postsError && (
             <Card>
               <CardContent className="p-8 text-center text-destructive">{postsError}</CardContent>

@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Clock, Settings, User, LogOut, Home, Users, Compass, Info } from "lucide-react";
+import { Clock, Settings, User, LogOut, Home, Users, Compass, Info, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import { useTimeTracking } from "@/contexts/TimeTrackingContext";
@@ -16,6 +17,7 @@ export function Header() {
   const location = useLocation();
   const { user, logout } = useUser();
   const { timeSpent } = useTimeTracking();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const minutes = Math.floor(timeSpent / 60);
   const isActive = (path: string) => location.pathname === path;
 
@@ -49,7 +51,7 @@ export function Header() {
           <img 
             src="/off2.png" 
             alt="OFF" 
-            className="h-9 w-9 object-contain rounded-lg shadow-md group-hover:shadow-glow-sm transition-shadow duration-300" 
+            className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-xl shadow-md group-hover:shadow-glow-sm transition-shadow duration-300" 
           />
         </Link>
 
@@ -77,8 +79,19 @@ export function Header() {
           </nav>
         )}
 
+        {/* Mobile Menu Button */}
+        {user && (
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-muted/50 transition-colors"
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        )}
+
         {/* Right Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {user && (
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/80 border border-border/50">
               <Clock className={`w-4 h-4 ${timeStatus.color}`} />
@@ -159,6 +172,44 @@ export function Header() {
           )}
         </div>
       </div>
+      {/* Mobile Navigation */}
+      {user && mobileMenuOpen && (
+        <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-xl">
+          <nav className="container px-4 py-3 space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    active
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+            
+            {/* Mobile Time Status */}
+            <div className="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl bg-card/50 border border-border/30">
+              <Clock className={`w-5 h-5 ${timeStatus.color}`} />
+              <div>
+                <span className="text-sm font-medium">{minutes} minutos</span>
+                <p className="text-xs text-muted-foreground">Tempo de uso hoje</p>
+              </div>
+              <Badge variant={timeStatus.variant} className="ml-auto">
+                {timeStatus.label}
+              </Badge>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
