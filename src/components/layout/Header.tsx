@@ -51,9 +51,6 @@ export function Header() {
             alt="OFF" 
             className="h-9 w-9 object-contain rounded-lg shadow-md group-hover:shadow-glow-sm transition-shadow duration-300" 
           />
-          <span className="hidden sm:block text-lg font-bold gradient-text">
-            OFF
-          </span>
         </Link>
 
         {/* Navigation - Desktop */}
