@@ -14,7 +14,6 @@ import {
   Clock,
   Shield,
   User,
-  AlertTriangle,
   Save,
 } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
@@ -299,27 +298,6 @@ export default function Settings() {
                   />
                 </div>
 
-                <Separator />
-
-                <Card className="border-destructive/20 bg-destructive/5">
-                  <CardContent className="p-4">
-                    <div className="flex items-start space-x-3">
-                      <AlertTriangle className="h-5 w-5 text-destructive" />
-                      <div>
-                        <p className="text-sm font-medium">
-                          Zona de perigo
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Ações irreversíveis que afetam permanentemente sua
-                          conta.
-                        </p>
-                        <Button variant="destructive" size="sm">
-                          Desativar conta
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </CardContent>
             </Card>
           </TabsContent>
