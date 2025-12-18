@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { PenTool, Send, Clock } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
+import { useTimeTracking } from "@/contexts/TimeTrackingContext";
 import { listCommunities, type Community as ApiCommunity, createCommunityPost } from "@/api/community";
 
 interface PostFormProps {
@@ -23,6 +24,7 @@ export function PostForm({ onSubmit, communities = [], hideCommunitySelect = fal
   const [selectedCommunity, setSelectedCommunity] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useUser();
+  const { isLimitReached } = useTimeTracking();
   const [loadingCommunities, setLoadingCommunities] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [fetchedCommunities, setFetchedCommunities] = useState<Array<{ id?: string; name: string }>>([]);
@@ -61,7 +63,7 @@ export function PostForm({ onSubmit, communities = [], hideCommunitySelect = fal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim() || !selectedCommunity) return;
+    if (!content.trim() || !selectedCommunity || isLimitReached) return;
 
     setIsSubmitting(true);
     
@@ -183,7 +185,7 @@ export function PostForm({ onSubmit, communities = [], hideCommunitySelect = fal
             </Button>
             <Button
               type="submit"
-              disabled={!content.trim() || !selectedCommunity || isSubmitting}
+              disabled={!content.trim() || !selectedCommunity || isSubmitting || isLimitReached}
               className="min-w-[100px]"
             >
               {isSubmitting ? (

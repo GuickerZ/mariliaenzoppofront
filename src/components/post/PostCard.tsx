@@ -16,6 +16,7 @@ import {
   dislikePost,
   undislikePost,
 } from "@/api/posts";
+import { useTimeTracking } from "@/contexts/TimeTrackingContext";
 
 interface PostCardProps {
   id: string;
@@ -48,6 +49,8 @@ export function PostCard({
   hasDisliked = false,
   className,
 }: PostCardProps) {
+  const { isLimitReached } = useTimeTracking();
+  
   const [showReplies, setShowReplies] = useState(false);
   const [replies, setReplies] = useState<Discussion[]>([]);
   const [loadingReplies, setLoadingReplies] = useState(false);
@@ -122,7 +125,7 @@ export function PostCard({
   }, [showReplies, id]);
 
   const handleReply = async () => {
-    if (!newReply.trim() || submittingReply) return;
+    if (!newReply.trim() || submittingReply || isLimitReached) return;
     try {
       setSubmittingReply(true);
       const created = await createDiscussion(id, { content: newReply.trim() });
@@ -189,6 +192,9 @@ export function PostCard({
             qualityValue={getQualityValue()} // ← Isso garante que o botão venha selecionado
             onFeedback={async (type, positive) => {
               if (type !== "quality") return;
+              
+              // Bloqueia ações quando limite de tempo é atingido
+              if (isLimitReached) return;
               
               // Evita cliques múltiplos (race condition)
               if (isProcessingFeedback) return;
@@ -333,7 +339,7 @@ export function PostCard({
               <Button
                 size="icon"
                 onClick={handleReply}
-                disabled={submittingReply || !newReply.trim()}
+                disabled={submittingReply || !newReply.trim() || isLimitReached}
                 className="h-[60px] w-12 bg-primary hover:bg-primary/90"
               >
                 <Send className="h-4 w-4" />
