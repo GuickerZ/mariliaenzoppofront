@@ -4,7 +4,7 @@ import { TimeTracker } from "@/components/ui/time-tracker";
 import { useTimeTracking } from "@/contexts/TimeTrackingContext";
 import { useUser } from "@/contexts/UserContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Clock, Users, ArrowRight } from "lucide-react";
+import { Clock, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,15 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps) {
-  const { isLimitReached, dismissLimitWarning } = useTimeTracking();
+  const { isLimitReached, timeUntilReset } = useTimeTracking();
+
+  // Formatar tempo restante
+  const formatTimeRemaining = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
   const { user } = useUser();
 
   return (
@@ -23,33 +31,40 @@ export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps
       
       {/* Limit Reached Overlay */}
       {isLimitReached && (
-        <div className="fixed inset-0 bg-background/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <Card className="max-w-md mx-auto glass-card border-destructive/20 animate-scale-in">
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <Card className="max-w-md mx-auto glass-card border-destructive/30 animate-scale-in">
             <CardContent className="p-8 text-center space-y-6">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="h-8 w-8 text-destructive" />
+              <div className="w-20 h-20 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+                <Clock className="h-10 w-10 text-destructive" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold">Limite diário atingido</h2>
+              <div className="space-y-3">
+                <h2 className="text-2xl font-bold text-destructive">Limite diário atingido</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Você usou todo o tempo diário definido. Que tal fazer uma pausa para reflexão?
+                  Você usou todo o seu tempo diário. Faça uma pausa e volte amanhã.
                 </p>
               </div>
-              <div className="space-y-3 pt-2">
+              
+              {/* Countdown */}
+              <div className="py-4 px-6 rounded-xl bg-muted/50 border border-border/30">
+                <p className="text-xs text-muted-foreground mb-2">Acesso liberado em</p>
+                <div className="text-4xl font-mono font-bold text-foreground tracking-wider">
+                  {formatTimeRemaining(timeUntilReset)}
+                </div>
+              </div>
+
+              <div className="pt-2">
                 <Button 
                   onClick={() => window.location.href = '/settings'}
-                  className="w-full h-12 bg-gradient-to-r from-primary to-secondary"
+                  variant="outline"
+                  className="w-full h-12 border-border/50"
                 >
-                  Ajustar limite
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={dismissLimitWarning}
-                  className="w-full h-12 border-border/50 hover:bg-muted/50"
-                >
-                  Continuar mesmo assim
+                  Ajustar limite nas configurações
                 </Button>
               </div>
+              
+              <p className="text-xs text-muted-foreground">
+                Seu bem-estar mental é prioridade. Use esse tempo para atividades offline.
+              </p>
             </CardContent>
           </Card>
         </div>

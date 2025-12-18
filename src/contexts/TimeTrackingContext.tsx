@@ -10,11 +10,11 @@ interface TimeTrackingContextType {
   timeSpent: number;
   dailyLimit: number;
   isLimitReached: boolean;
+  timeUntilReset: number;
   startSession: () => void;
   pauseSession: () => void;
   resetDaily: () => void;
   updateDailyLimit: (limit: number) => void;
-  dismissLimitWarning: () => void;
 }
 
 const TimeTrackingContext =
@@ -29,10 +29,10 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
   const [lastActiveDate, setLastActiveDate] = useState(
     new Date().toDateString()
   );
-  const [limitDismissed, setLimitDismissed] = useState(false);
+  const [timeUntilReset, setTimeUntilReset] = useState(0);
 
   const limitInSeconds = dailyLimit * 60;
-  const isLimitReached = timeSpent >= limitInSeconds && !limitDismissed;
+  const isLimitReached = timeSpent >= limitInSeconds;
 
   /* =====================
      RESTAURA AO CARREGAR
@@ -102,25 +102,42 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     );
   }, [timeSpent, dailyLimit, lastActiveDate]);
 
+  // Calcular tempo até reset (meia-noite)
+  useEffect(() => {
+    const calculateTimeUntilReset = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      return Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
+    };
+
+    setTimeUntilReset(calculateTimeUntilReset());
+
+    const interval = setInterval(() => {
+      setTimeUntilReset(calculateTimeUntilReset());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <TimeTrackingContext.Provider
       value={{
         timeSpent,
         dailyLimit,
         isLimitReached,
+        timeUntilReset,
         startSession: () => {
           if (!isLimitReached) setIsActive(true);
         },
         pauseSession: () => setIsActive(false),
         resetDaily: () => {
           setTimeSpent(0);
-          setLimitDismissed(false);
         },
         updateDailyLimit: (limit: number) => {
           setDailyLimit(limit);
-          setLimitDismissed(false);
         },
-        dismissLimitWarning: () => setLimitDismissed(true),
       }}
     >
       {children}
