@@ -60,6 +60,9 @@ export function PostCard({
   const [dislikes, setDislikes] = useState(naoGostou);
   const [liked, setLiked] = useState(hasLiked);
   const [disliked, setDisliked] = useState(hasDisliked);
+  
+  // Flag para evitar cliques múltiplos (race condition)
+  const [isProcessingFeedback, setIsProcessingFeedback] = useState(false);
 
   useEffect(() => {
     setLikes(qualidade);
@@ -93,32 +96,41 @@ export function PostCard({
     };
   }, [id]);
 
+  // Carrega respostas quando abre a seção (sempre recarrega para pegar novas)
   useEffect(() => {
     if (!showReplies) return;
-    if (replies.length > 0) return;
+    
+    let mounted = true;
     const load = async () => {
       try {
         setLoadingReplies(true);
         setRepliesError(null);
         const data = await listDiscussions(id);
+        if (!mounted) return;
         setReplies(data);
         setRepliesCount(data.length);
       } catch (e) {
+        if (!mounted) return;
         setRepliesError("Não foi possível carregar respostas.");
       } finally {
-        setLoadingReplies(false);
+        if (mounted) setLoadingReplies(false);
       }
     };
     load();
-  }, [showReplies, id, replies.length]);
+    
+    return () => { mounted = false; };
+  }, [showReplies, id]);
 
   const handleReply = async () => {
-    if (!newReply.trim()) return;
+    if (!newReply.trim() || submittingReply) return;
     try {
       setSubmittingReply(true);
       const created = await createDiscussion(id, { content: newReply.trim() });
-      setReplies([created, ...replies]);
+      setReplies(prev => [created, ...prev]);
+      setRepliesCount(prev => (prev ?? 0) + 1);
       setNewReply("");
+    } catch (e) {
+      // Silencioso - o usuário verá que a resposta não apareceu
     } finally {
       setSubmittingReply(false);
     }
@@ -177,59 +189,71 @@ export function PostCard({
             qualityValue={getQualityValue()} // ← Isso garante que o botão venha selecionado
             onFeedback={async (type, positive) => {
               if (type !== "quality") return;
+              
+              // Evita cliques múltiplos (race condition)
+              if (isProcessingFeedback) return;
+              setIsProcessingFeedback(true);
 
-              const prev = { likes, dislikes, liked, disliked };
+              // Captura estado ANTES de qualquer mudança
+              const prevLikes = likes;
+              const prevDislikes = dislikes;
+              const prevLiked = liked;
+              const prevDisliked = disliked;
 
               try {
                 if (positive) {
-                  if (liked) {
+                  if (prevLiked) {
                     // Remove like
                     setLiked(false);
-                    setLikes((v) => Math.max(0, v - 1));
+                    setLikes(Math.max(0, prevLikes - 1));
                     const updated = await unlikePost(id);
-                    setLikes(updated.qualidade ?? Math.max(0, prev.likes - 1));
+                    setLikes(updated.qualidade ?? Math.max(0, prevLikes - 1));
                     setLiked(Boolean(updated.hasLiked));
                   } else {
                     // Adiciona like, remove dislike se existir
-                    if (disliked) {
+                    if (prevDisliked) {
                       setDisliked(false);
-                      setDislikes((v) => Math.max(0, v - 1));
+                      setDislikes(Math.max(0, prevDislikes - 1));
                     }
                     setLiked(true);
-                    setLikes((v) => v + 1);
+                    setLikes(prevLikes + 1);
                     const updated = await likePost(id);
-                    setLikes(updated.qualidade ?? prev.likes + 1);
+                    setLikes(updated.qualidade ?? prevLikes + 1);
+                    setDislikes(updated.naoGostou ?? (prevDisliked ? Math.max(0, prevDislikes - 1) : prevDislikes));
                     setLiked(Boolean(updated.hasLiked ?? true));
+                    setDisliked(Boolean(updated.hasDisliked));
                   }
                 } else {
-                  if (disliked) {
+                  if (prevDisliked) {
                     // Remove dislike
                     setDisliked(false);
-                    setDislikes((v) => Math.max(0, v - 1));
+                    setDislikes(Math.max(0, prevDislikes - 1));
                     const updated = await undislikePost(id);
-                    setDislikes(
-                      updated.naoGostou ?? Math.max(0, prev.dislikes - 1)
-                    );
+                    setDislikes(updated.naoGostou ?? Math.max(0, prevDislikes - 1));
                     setDisliked(Boolean(updated.hasDisliked));
                   } else {
                     // Adiciona dislike, remove like se existir
-                    if (liked) {
+                    if (prevLiked) {
                       setLiked(false);
-                      setLikes((v) => Math.max(0, v - 1));
+                      setLikes(Math.max(0, prevLikes - 1));
                     }
                     setDisliked(true);
-                    setDislikes((v) => v + 1);
+                    setDislikes(prevDislikes + 1);
                     const updated = await dislikePost(id);
-                    setDislikes(updated.naoGostou ?? prev.dislikes + 1);
+                    setDislikes(updated.naoGostou ?? prevDislikes + 1);
+                    setLikes(updated.qualidade ?? (prevLiked ? Math.max(0, prevLikes - 1) : prevLikes));
                     setDisliked(Boolean(updated.hasDisliked ?? true));
+                    setLiked(Boolean(updated.hasLiked));
                   }
                 }
               } catch (e) {
                 // Rollback em caso de erro
-                setLikes(prev.likes);
-                setDislikes(prev.dislikes);
-                setLiked(prev.liked);
-                setDisliked(prev.disliked);
+                setLikes(prevLikes);
+                setDislikes(prevDislikes);
+                setLiked(prevLiked);
+                setDisliked(prevDisliked);
+              } finally {
+                setIsProcessingFeedback(false);
               }
             }}
           />

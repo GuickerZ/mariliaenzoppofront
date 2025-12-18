@@ -76,29 +76,30 @@ export function HomeSidebar() {
           <CardContent>
             <TimeTracker
               onLimitReached={() => {
-                const alertEnabled =
-                  localStorage.getItem("timeAlertEnabled") === "true";
-                const autoLogoutEnabled =
-                  localStorage.getItem("autoLogoutEnabled") === "true";
+                const today = new Date().toISOString().slice(0, 10);
+                const alertEnabled = localStorage.getItem("timeAlertEnabled") === "true";
+                const autoLogoutEnabled = localStorage.getItem("autoLogoutEnabled") === "true";
+                
+                // Verifica se já mostrou o alerta hoje para evitar repetição
+                const alertShownToday = localStorage.getItem("timeAlertShownAt") === today;
 
-                if (alertEnabled) {
+                if (alertEnabled && !alertShownToday) {
+                  localStorage.setItem("timeAlertShownAt", today);
                   toast({
                     title: "Limite diário atingido",
-                    description:
-                      "Faça uma pausa e volte mais tarde. Sua mente agradece.",
+                    description: "Faça uma pausa e volte mais tarde. Sua mente agradece.",
                     variant: "destructive"
                   });
                   setLimitBannerVisible(true);
                 }
 
                 if (autoLogoutEnabled) {
-                  const today = new Date()
-                    .toISOString()
-                    .slice(0, 10);
-
-                  if (localStorage.getItem("autoLoggedOutAt") !== today) {
+                  const alreadyLoggedOutToday = localStorage.getItem("autoLoggedOutAt") === today;
+                  
+                  if (!alreadyLoggedOutToday) {
                     localStorage.setItem("autoLoggedOutAt", today);
                     logout();
+                    // Pequeno delay para garantir que o logout seja processado
                     setTimeout(() => {
                       window.location.href = "/login";
                     }, 300);

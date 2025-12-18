@@ -53,16 +53,20 @@ const Index = () => {
   const [statsError, setStatsError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const loadPosts = async () => {
       try {
         const postsFromAPI = await getPosts();
+        
+        if (!mounted) return;
 
         const formattedPosts = postsFromAPI.map((post) => ({
           id: post.id.toString(),
-          author: post.creator.name,
+          author: post.creator?.name ?? "Anônimo",
           content: post.content,
           createdAt: new Date(post.createdAt),
-          readTime: Math.ceil(post.content.split(" ").length / 200),
+          readTime: Math.max(1, Math.ceil(post.content.split(" ").length / 200)),
           qualidade: typeof post.qualidade === "number" ? post.qualidade : 0,
           naoGostou: typeof post.naoGostou === "number" ? post.naoGostou : 0,
           hasLiked: Boolean((post as Post).hasLiked),
@@ -76,26 +80,36 @@ const Index = () => {
     };
 
     loadPosts();
+    
+    return () => { mounted = false; };
   }, []);
 
+  // Carrega stats apenas quando user.id muda (não quando todo o objeto user muda)
+  const userId = user?.id;
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
+    
+    let mounted = true;
 
     const loadStats = async () => {
       try {
         setStatsLoading(true);
         setStatsError(null);
         const data = await getMyStats();
+        if (!mounted) return;
         setStats(data);
       } catch {
+        if (!mounted) return;
         setStatsError("Não foi possível carregar suas estatísticas.");
       } finally {
-        setStatsLoading(false);
+        if (mounted) setStatsLoading(false);
       }
     };
 
     loadStats();
-  }, [user]);
+    
+    return () => { mounted = false; };
+  }, [userId]);
 
   const visiblePosts = feedPosts.slice(0, 5);
 

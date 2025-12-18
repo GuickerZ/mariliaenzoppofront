@@ -27,18 +27,24 @@ export default function Communities() {
   const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchCommunities = async () => {
       try {
         setLoading(true);
         const data = await listCommunities();
+        if (!mounted) return;
         setCommunities(Array.isArray(data) ? data : []);
       } catch (e) {
+        if (!mounted) return;
         setError("Não foi possível carregar as comunidades.");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchCommunities();
+    
+    return () => { mounted = false; };
   }, []);
 
   const allTags = Array.from(

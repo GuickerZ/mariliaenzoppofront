@@ -1,7 +1,7 @@
 import { Clock, AlertTriangle, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTimeTracking } from "@/contexts/TimeTrackingContext";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 interface TimeTrackerProps {
   onLimitReached?: () => void;
@@ -9,15 +9,29 @@ interface TimeTrackerProps {
 
 export function TimeTracker({ onLimitReached }: TimeTrackerProps) {
   const { timeSpent, dailyLimit, isLimitReached } = useTimeTracking();
+  
+  // Guard para chamar onLimitReached apenas UMA vez por sessão
+  const limitReachedCalledRef = useRef(false);
+  const onLimitReachedRef = useRef(onLimitReached);
+  
+  // Atualiza a ref quando o callback muda (sem causar re-render)
+  useEffect(() => {
+    onLimitReachedRef.current = onLimitReached;
+  }, [onLimitReached]);
 
   /* =====================
-     CALLBACK AO ATINGIR LIMITE
+     CALLBACK AO ATINGIR LIMITE (apenas uma vez)
      ===================== */
   useEffect(() => {
-    if (isLimitReached && onLimitReached) {
-      onLimitReached();
+    if (isLimitReached && !limitReachedCalledRef.current && onLimitReachedRef.current) {
+      limitReachedCalledRef.current = true;
+      onLimitReachedRef.current();
     }
-  }, [isLimitReached, onLimitReached]);
+    // Reset quando limite não está mais atingido (novo dia)
+    if (!isLimitReached) {
+      limitReachedCalledRef.current = false;
+    }
+  }, [isLimitReached]);
 
   /* =====================
      TEMPO FORMATADO

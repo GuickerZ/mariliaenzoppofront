@@ -38,32 +38,61 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validação básica
+    if (!formData.email.trim() || !formData.password) {
+      setErrorMessage("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      setErrorMessage("As senhas não conferem.");
+      return;
+    }
+
+    if (!isLogin && formData.password.length < 6) {
+      setErrorMessage("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
     try {
       setErrorMessage(null);
-
-      if (!isLogin && formData.password !== formData.confirmPassword) {
-        setErrorMessage("As senhas não conferem.");
-        return;
-      }
-
       setIsSubmitting(true);
+      
       const res = isLogin
-        ? await auth(formData.email, formData.password)
-        : await register(formData.email, formData.password);
-      if (res?.accessToken) {
-        localStorage.setItem('accessToken', res.accessToken);
+        ? await auth(formData.email.trim(), formData.password)
+        : await register(formData.email.trim(), formData.password);
+      
+      // Verifica se recebeu token válido
+      if (!res?.accessToken) {
+        throw new Error("Token não recebido");
       }
+      
+      localStorage.setItem('accessToken', res.accessToken);
+      
+      // Busca dados do usuário
       const me = await getUser();
-      if (me) {
-        localStorage.setItem('userId', String(me.id));
-        login({
-          id: String(me.id),
-          email: me.email,
-          joinedAt: new Date(),
-          communities: [],
-          dailyTimeLimit: 30,
-        });
+      
+      if (!me) {
+        // Remove token se não conseguiu buscar usuário
+        localStorage.removeItem('accessToken');
+        throw new Error("Não foi possível carregar dados do usuário");
       }
+      
+      localStorage.setItem('userId', String(me.id));
+      
+      // Login bem sucedido - limpa flags de alerta do dia anterior
+      localStorage.removeItem("timeAlertShownAt");
+      localStorage.removeItem("autoLoggedOutAt");
+      
+      login({
+        id: String(me.id),
+        email: me.email,
+        joinedAt: new Date(),
+        communities: [],
+        dailyTimeLimit: 30,
+      });
+      
+      // Navega apenas após tudo estar configurado
       navigate("/");
     } catch (error) {
       console.error("Erro ao autenticar:", error);

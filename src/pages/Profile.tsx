@@ -34,32 +34,42 @@ export default function Profile() {
   const [insightsError, setInsightsError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchMyPosts = async () => {
       try {
         setLoadingPosts(true);
         const data = await listMyPosts();
+        if (!mounted) return;
         const withRead = data.map(p => ({ ...p, readTime: p.readTime ?? calculateReadTime(p.content) }));
         setUserPosts(withRead);
       } catch (e) {
+        if (!mounted) return;
         setPostsError("Não foi possível carregar suas reflexões.");
       } finally {
-        setLoadingPosts(false);
+        if (mounted) setLoadingPosts(false);
       }
     };
     fetchMyPosts();
+    
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchActivity = async () => {
       try {
         setLoadingWeekly(true);
         setWeeklyError(null);
         const data = await getMyWeeklyActivity();
+        if (!mounted) return;
         setWeekly(data);
       } catch (e) {
+        if (!mounted) return;
         setWeeklyError("Não foi possível carregar sua atividade semanal.");
       } finally {
-        setLoadingWeekly(false);
+        if (mounted) setLoadingWeekly(false);
       }
     };
     const fetchInsights = async () => {
@@ -67,15 +77,19 @@ export default function Profile() {
         setLoadingInsights(true);
         setInsightsError(null);
         const data = await getMyInsights();
+        if (!mounted) return;
         setInsights(data);
       } catch (e) {
+        if (!mounted) return;
         setInsightsError("Não foi possível carregar seus insights.");
       } finally {
-        setLoadingInsights(false);
+        if (mounted) setLoadingInsights(false);
       }
     };
     fetchActivity();
     fetchInsights();
+    
+    return () => { mounted = false; };
   }, []);
 
   if (!user) {

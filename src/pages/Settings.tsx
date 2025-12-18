@@ -60,6 +60,11 @@ export default function Settings() {
       "autoLogoutEnabled",
       settings.autoLogout ? "true" : "false"
     );
+    
+    // Limpa flags de alerta para permitir que o novo limite seja testado
+    // (se o usuário aumentou o limite, deve poder ver o alerta novamente quando atingir)
+    localStorage.removeItem("timeAlertShownAt");
+    localStorage.removeItem("autoLoggedOutAt");
 
     toast({
       title: "Configurações salvas!",

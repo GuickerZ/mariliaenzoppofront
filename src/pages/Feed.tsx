@@ -32,41 +32,53 @@ export default function Feed() {
   const [postsError, setPostsError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchCommunities = async () => {
       try {
         setLoadingCommunities(true);
         const data = await listCommunities();
+        if (!mounted) return;
         setCommunities(Array.isArray(data) ? data : []);
       } catch (e) {
+        if (!mounted) return;
         setCommunitiesError("Não foi possível carregar as comunidades.");
       } finally {
-        setLoadingCommunities(false);
+        if (mounted) setLoadingCommunities(false);
       }
     };
     fetchCommunities();
+    
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchPosts = async () => {
       try {
         setLoadingPosts(true);
         const data = await listRandomPosts();
+        if (!mounted) return;
         const withRead = data.map(p => ({ ...p, readTime: calculateReadTime(p.content) }));
         setPosts(withRead);
       } catch (e) {
+        if (!mounted) return;
         setPostsError("Não foi possível carregar as reflexões.");
       } finally {
-        setLoadingPosts(false);
+        if (mounted) setLoadingPosts(false);
       }
     };
     fetchPosts();
+    
+    return () => { mounted = false; };
   }, []);
 
   const handleNewPost = async (newPost: { content: string; community: string; readTime: number }) => {
     try {
       const created = await createCommunityPost(newPost.community, { content: newPost.content });
       const withRead = { ...created, author: user?.email || created.author, readTime: calculateReadTime(created.content) };
-      setPosts([withRead, ...posts]);
+      setPosts(prev => [withRead, ...prev]);
       setShowPostForm(false);
       toast({
         title: "Reflexão publicada!",

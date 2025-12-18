@@ -66,9 +66,13 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     const stored = getStoredData();
     
     if (stored && stored.lastActiveDate === today) {
+      const dailyLimit = validateLimit(stored.dailyLimit ?? 30);
+      const maxTimeInSeconds = dailyLimit * 60;
+      // Garante que timeSpent não excede o limite (caso usuário tenha reduzido)
+      const timeSpent = Math.min(stored.timeSpent ?? 0, maxTimeInSeconds);
       return {
-        timeSpent: stored.timeSpent ?? 0,
-        dailyLimit: validateLimit(stored.dailyLimit ?? 30),
+        timeSpent,
+        dailyLimit,
         lastActiveDate: today,
       };
     }
@@ -113,22 +117,30 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     };
   }, [saveToStorage]);
 
-  // Contador principal
+  // Contador principal - usa ref para evitar problemas de cleanup
   useEffect(() => {
+    // Limpa intervalo anterior se existir
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
 
+    // Não inicia se inativo ou limite atingido
     if (!isActive || isLimitReached) return;
 
     intervalRef.current = setInterval(() => {
       setState(prev => {
-        const newTimeSpent = prev.timeSpent + 1;
         const maxTime = prev.dailyLimit * 60;
         
+        // Já atingiu o limite, não incrementa mais
+        if (prev.timeSpent >= maxTime) {
+          return prev;
+        }
+        
+        const newTimeSpent = prev.timeSpent + 1;
+        
+        // Atingiu o limite agora
         if (newTimeSpent >= maxTime) {
-          if (intervalRef.current) clearInterval(intervalRef.current);
           return { ...prev, timeSpent: maxTime };
         }
         
@@ -136,6 +148,7 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
       });
     }, 1000);
 
+    // Cleanup: limpa apenas o intervalo criado neste effect
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -143,6 +156,12 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
       }
     };
   }, [isActive, isLimitReached]);
+
+  // Ref para acessar isLimitReached dentro de callbacks sem causar re-render
+  const isLimitReachedRef = useRef(isLimitReached);
+  useEffect(() => {
+    isLimitReachedRef.current = isLimitReached;
+  }, [isLimitReached]);
 
   // Verificar mudança de dia e visibilidade
   useEffect(() => {
@@ -161,7 +180,8 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {
         checkDate();
-        if (!isLimitReached) setIsActive(true);
+        // Usa ref para evitar re-criação do listener
+        if (!isLimitReachedRef.current) setIsActive(true);
       } else {
         setIsActive(false);
       }
@@ -174,11 +194,17 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
           const data = JSON.parse(e.newValue) as StoredData;
           const today = new Date().toDateString();
           if (data.lastActiveDate === today) {
-            setState(prev => ({
-              ...prev,
-              timeSpent: Math.max(prev.timeSpent, data.timeSpent),
-              dailyLimit: validateLimit(data.dailyLimit),
-            }));
+            setState(prev => {
+              const newLimit = validateLimit(data.dailyLimit);
+              const maxTime = newLimit * 60;
+              // Usa o maior tempo, mas não excede o novo limite
+              const newTimeSpent = Math.min(Math.max(prev.timeSpent, data.timeSpent), maxTime);
+              return {
+                ...prev,
+                timeSpent: newTimeSpent,
+                dailyLimit: newLimit,
+              };
+            });
           }
         } catch { /* ignore */ }
       }
@@ -195,7 +221,7 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("storage", handleStorage);
       clearInterval(dateCheckInterval);
     };
-  }, [isLimitReached]);
+  }, []); // Agora sem dependências - listeners criados apenas uma vez
 
   // Atualizar contador regressivo
   useEffect(() => {
@@ -206,10 +232,10 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Callbacks memoizados
+  // Callbacks memoizados - usam refs para evitar recriação
   const startSession = useCallback(() => {
-    if (!isLimitReached) setIsActive(true);
-  }, [isLimitReached]);
+    if (!isLimitReachedRef.current) setIsActive(true);
+  }, []);
 
   const pauseSession = useCallback(() => {
     setIsActive(false);
