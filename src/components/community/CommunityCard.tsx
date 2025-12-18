@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageSquare, TrendingUp } from "lucide-react";
+import { Users, MessageSquare, TrendingUp, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface CommunityCardProps {
@@ -25,70 +25,92 @@ export function CommunityCard({
   featured = false,
   to
 }: CommunityCardProps) {
-  return (
-    <Card className={`transition-all duration-300 hover:shadow-medium ${featured ? 'ring-1 ring-primary/20' : ''}`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-lg font-medium">{name}</CardTitle>
-          {featured && (
-            <Badge variant="secondary" className="text-xs">Destaque</Badge>
-          )}
-        </div>
-        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-          {description}
-        </p>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap gap-1">
-          {tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
-          {tags.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{tags.length - 3}
-            </Badge>
-          )}
+  const content = (
+    <Card className={`group glass-card-hover border-border/30 h-full flex flex-col ${featured ? 'ring-1 ring-primary/30 bg-gradient-to-br from-primary/5 to-transparent' : ''}`}>
+      <CardContent className="p-5 flex flex-col h-full">
+        {/* Header */}
+        <div className="space-y-3 mb-4">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold text-base group-hover:text-primary transition-colors line-clamp-1">
+              {name}
+            </h3>
+            {featured && (
+              <Badge className="bg-primary/10 text-primary border-0 text-2xs px-1.5 py-0 flex items-center gap-1 flex-shrink-0">
+                <Sparkles className="h-3 w-3" />
+                Destaque
+              </Badge>
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            {description || "Comunidade para discussões e reflexões conscientes."}
+          </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div className="space-y-1">
-            <div className="flex items-center justify-center text-muted-foreground">
-              <Users className="h-3 w-3 mr-1" />
-            </div>
-            <div className="text-sm font-medium">{memberCount}</div>
-            <div className="text-xs text-muted-foreground">membros</div>
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {tags.slice(0, 3).map((tag) => (
+              <Badge 
+                key={tag} 
+                variant="secondary" 
+                className="text-2xs px-2 py-0.5 bg-muted/50 hover:bg-muted transition-colors"
+              >
+                {tag}
+              </Badge>
+            ))}
+            {tags.length > 3 && (
+              <Badge variant="outline" className="text-2xs px-2 py-0.5">
+                +{tags.length - 3}
+              </Badge>
+            )}
           </div>
-          
-          <div className="space-y-1">
-            <div className="flex items-center justify-center text-muted-foreground">
-              <MessageSquare className="h-3 w-3 mr-1" />
-            </div>
-            <div className="text-sm font-medium">{activeDiscussions}</div>
-            <div className="text-xs text-muted-foreground">respostas</div>
-          </div>
-          
-          <div className="space-y-1">
-            <div className="flex items-center justify-center text-muted-foreground">
-              <TrendingUp className="h-3 w-3 mr-1" />
-            </div>
-            <div className="text-sm font-medium">{topicsThisWeek}</div>
-            <div className="text-xs text-muted-foreground">reflexões</div>
-          </div>
-        </div>
-
-        {to ? (
-          <Button variant="outline" className="w-full" size="sm" asChild>
-            <Link to={to}>Explorar comunidade</Link>
-          </Button>
-        ) : (
-          <Button variant="outline" className="w-full" size="sm">
-            Explorar comunidade
-          </Button>
         )}
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-2 py-3 px-2 rounded-lg bg-muted/30 mb-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-1">
+              <Users className="h-4 w-4 text-primary" />
+            </div>
+            <div className="text-sm font-semibold tabular-nums">{memberCount}</div>
+            <div className="text-2xs text-muted-foreground">membros</div>
+          </div>
+          
+          <div className="text-center border-x border-border/30">
+            <div className="flex items-center justify-center mb-1">
+              <MessageSquare className="h-4 w-4 text-secondary" />
+            </div>
+            <div className="text-sm font-semibold tabular-nums">{activeDiscussions}</div>
+            <div className="text-2xs text-muted-foreground">respostas</div>
+          </div>
+          
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-1">
+              <TrendingUp className="h-4 w-4 text-accent" />
+            </div>
+            <div className="text-sm font-semibold tabular-nums">{topicsThisWeek}</div>
+            <div className="text-2xs text-muted-foreground">reflexões</div>
+          </div>
+        </div>
+
+        {/* Action */}
+        <div className="mt-auto">
+          <Button 
+            variant="ghost" 
+            className="w-full h-9 justify-between text-muted-foreground hover:text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all"
+            size="sm"
+          >
+            <span>Explorar</span>
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
+
+  if (to) {
+    return <Link to={to} className="block h-full">{content}</Link>;
+  }
+
+  return content;
 }

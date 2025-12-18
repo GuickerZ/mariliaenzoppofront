@@ -96,19 +96,21 @@ export default function Profile() {
     <MainLayout>
       <div className="space-y-6">
         {/* Profile Header */}
-        <Card>
-          <CardContent className="p-6">
+        <Card className="glass-card border-border/30 overflow-hidden">
+          <CardContent className="p-6 md:p-8">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-shrink-0">
-                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center">
-                  <User className="h-12 w-12 text-accent-foreground" />
+                <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent p-[3px]">
+                  <div className="h-full w-full rounded-2xl bg-background flex items-center justify-center">
+                    <User className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
               </div>
               
               <div className="flex-1 space-y-4">
                 <div>
-                  <h1 className="text-2xl font-bold">{user.email}</h1>
-                  <p className="text-muted-foreground">{user.email}</p>
+                  <h1 className="text-2xl font-bold gradient-text">{user.email.split('@')[0]}</h1>
+                  <p className="text-muted-foreground text-sm">{user.email}</p>
                   <div className="flex items-center space-x-1 text-sm text-muted-foreground mt-2">
                     <Calendar className="h-4 w-4" />
                     <span>
@@ -137,33 +139,41 @@ export default function Profile() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
+          <Card className="glass-card border-border/30">
             <CardContent className="p-4 text-center">
-              <TrendingUp className="h-6 w-6 text-primary mx-auto mb-2" />
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
               <div className="text-xl font-bold">{loadingInsights ? '...' : (insights?.totalPosts ?? 0)}</div>
               <div className="text-sm text-muted-foreground">reflexões</div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="glass-card border-border/30">
             <CardContent className="p-4 text-center">
-              <MessageSquare className="h-6 w-6 text-primary mx-auto mb-2" />
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-secondary/10 flex items-center justify-center">
+                <MessageSquare className="h-5 w-5 text-secondary" />
+              </div>
               <div className="text-xl font-bold">{loadingInsights ? '...' : (insights?.totalDiscussions ?? 0)}</div>
               <div className="text-sm text-muted-foreground">discussões</div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="glass-card border-border/30">
             <CardContent className="p-4 text-center">
-              <User className="h-6 w-6 text-primary mx-auto mb-2" />
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-accent/10 flex items-center justify-center">
+                <User className="h-5 w-5 text-accent" />
+              </div>
               <div className="text-xl font-bold">{loadingInsights ? '...' : (insights?.communitiesJoined ?? 0)}</div>
               <div className="text-sm text-muted-foreground">comunidades</div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="glass-card border-border/30">
             <CardContent className="p-4 text-center">
-              <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
+              <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Clock className="h-5 w-5 text-primary" />
+              </div>
               <div className="text-xl font-bold">{loadingInsights ? '...' : (insights?.averageReadTime ?? 0)}min</div>
               <div className="text-sm text-muted-foreground">leitura média</div>
             </CardContent>

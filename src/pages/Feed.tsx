@@ -4,9 +4,8 @@ import { PostCard } from "@/components/post/PostCard";
 import { PostForm } from "@/components/forms/PostForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RefreshCw, Filter, TrendingUp, Clock, Users } from "lucide-react";
+import { RefreshCw, TrendingUp, Clock, Users, Plus, SlidersHorizontal, Loader2, Filter } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { listCommunities, type Community } from "@/api/community";
@@ -110,9 +109,9 @@ export default function Feed() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Feed de Reflexões</h1>
-            <p className="text-muted-foreground">
+          <div className="space-y-1">
+            <h1 className="text-2xl md:text-3xl font-bold gradient-text">Feed de Reflexões</h1>
+            <p className="text-muted-foreground text-sm">
               Conteúdo consciente das suas comunidades
             </p>
           </div>
@@ -120,9 +119,9 @@ export default function Feed() {
           {user && (
             <Button 
               onClick={() => setShowPostForm(!showPostForm)}
-              className="flex items-center space-x-2"
+              className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
             >
-              <TrendingUp className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
               <span>Nova reflexão</span>
             </Button>
           )}

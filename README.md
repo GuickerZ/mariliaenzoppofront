@@ -1,4 +1,4 @@
-# Off - Rede Social Antidependência
+# OFF - Rede Social Antidependência
 
 Uma plataforma que inverte a lógica das redes sociais tradicionais. Sem curtidas públicas, sem feeds infinitos, sem algoritmos viciantes. Apenas reflexão consciente e conexões autênticas.
 

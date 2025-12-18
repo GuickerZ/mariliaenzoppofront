@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { FeedbackButtons } from "@/components/ui/feedback-buttons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Edit, Eye, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Clock, Edit, MessageCircle, ThumbsUp, ThumbsDown, User, ChevronDown, ChevronUp, Send, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ interface PostCardProps {
   author: string;
   content: string;
   createdAt: Date;
-  community: string;
+  community?: string;
   readTime: number;
   edited?: boolean;
   editHistory?: number;
@@ -56,13 +56,11 @@ export function PostCard({
   const [submittingReply, setSubmittingReply] = useState(false);
   const [repliesCount, setRepliesCount] = useState<number | null>(null);
 
-  // Use estados locais apenas para sincronizar com a API
   const [likes, setLikes] = useState(qualidade);
   const [dislikes, setDislikes] = useState(naoGostou);
   const [liked, setLiked] = useState(hasLiked);
   const [disliked, setDisliked] = useState(hasDisliked);
 
-  // Sincroniza quando as props mudam
   useEffect(() => {
     setLikes(qualidade);
     setDislikes(naoGostou);
@@ -70,7 +68,6 @@ export function PostCard({
     setDisliked(hasDisliked);
   }, [qualidade, naoGostou, hasLiked, hasDisliked]);
 
-  // Determina o valor para o FeedbackButtons
   const getQualityValue = (): boolean | null => {
     if (liked) return true;
     if (disliked) return false;
@@ -129,52 +126,52 @@ export function PostCard({
 
   return (
     <Card
-      className={`transition-all duration-300 hover:shadow-soft ${className}`}
+      className={`glass-card-hover border-border/30 ${className}`}
     >
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <span className="font-medium text-sm">{author}</span>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
+              <User className="h-5 w-5 text-primary" />
             </div>
-            <div className="flex items-center space-x-3 text-xs text-muted-foreground">
-              <span>
-                {formatDistanceToNow(createdAt, {
-                  addSuffix: true,
-                  locale: ptBR,
-                })}
-              </span>
-              <div className="flex items-center space-x-1">
-                <Clock className="h-3 w-3" />
-                <span>{readTime}min de leitura</span>
+            <div className="space-y-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-sm">{author}</span>
+                {community && (
+                  <Badge variant="secondary" className="text-2xs px-1.5 py-0">
+                    {community}
+                  </Badge>
+                )}
               </div>
-              <div className="flex items-center space-x-1">
-                <Badge variant="outline">
-                  {repliesCount === null ? "?" : repliesCount} respostas
-                </Badge>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                <span>
+                  {formatDistanceToNow(createdAt, {
+                    addSuffix: true,
+                    locale: ptBR,
+                  })}
+                </span>
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{readTime}min</span>
+                </div>
+                {edited && (
+                  <div className="flex items-center gap-1">
+                    <Edit className="h-3 w-3" />
+                    <span>{editHistory}x editado</span>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            {edited && (
-              <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                <Edit className="h-3 w-3" />
-                <span>{editHistory} edições</span>
-              </div>
-            )}
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        <div className="prose prose-sm max-w-none">
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">
-            {content}
-          </p>
-        </div>
+      <CardContent className="space-y-4 pt-0">
+        <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
+          {content}
+        </p>
 
-        <div className="flex items-center justify-between pt-3 border-t">
+        <div className="flex items-center justify-between pt-4 border-t border-border/30">
           <FeedbackButtons
             postId={id}
             qualityValue={getQualityValue()} // ← Isso garante que o botão venha selecionado
@@ -237,90 +234,89 @@ export function PostCard({
             }}
           />
 
-          <div className="flex items-center space-x-3 text-xs text-muted-foreground">
-            <div className="inline-flex items-center space-x-1">
-              <ThumbsUp className="h-3 w-3" />
-              <span>{likes}</span>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/30">
+              <ThumbsUp className={`h-3.5 w-3.5 ${liked ? 'text-primary' : ''}`} />
+              <span className="font-medium tabular-nums">{likes}</span>
             </div>
-            <div className="inline-flex items-center space-x-1">
-              <ThumbsDown className="h-3 w-3" />
-              <span>{dislikes}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Eye className="h-3 w-3" />
-              <span>Visualização consciente</span>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/30">
+              <ThumbsDown className={`h-3.5 w-3.5 ${disliked ? 'text-destructive' : ''}`} />
+              <span className="font-medium tabular-nums">{dislikes}</span>
             </div>
           </div>
         </div>
 
-        <div className="pt-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowReplies(!showReplies)}
-          >
-            {showReplies ? "Ocultar respostas" : "Discutir"}
-            {repliesCount !== null && !showReplies && (
-              <span className="ml-2 inline-flex">
-                <Badge variant="secondary">{repliesCount}</Badge>
-              </span>
-            )}
-          </Button>
-          {showReplies && (
-            <div className="mt-3 space-y-3">
-              {loadingReplies ? (
-                <div className="text-sm text-muted-foreground">
-                  Carregando respostas...
-                </div>
-              ) : repliesError ? (
-                <div className="text-sm text-destructive">{repliesError}</div>
-              ) : (
-                <div className="space-y-2">
-                  {replies.length === 0 ? (
-                    <div className="text-sm text-muted-foreground">
-                      Seja o primeiro a responder
-                    </div>
-                  ) : (
-                    replies.map((r) => (
-                      <div key={r.id} className="p-3 border rounded-md">
-                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                          <span>{r.author}</span>
-                          <span>
-                            {formatDistanceToNow(r.createdAt, {
-                              addSuffix: true,
-                              locale: ptBR,
-                            })}
-                          </span>
-                        </div>
-                        <p className="text-sm whitespace-pre-wrap">
-                          {r.content}
-                        </p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowReplies(!showReplies)}
+          className="w-full justify-between h-10 text-muted-foreground hover:text-foreground"
+        >
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
+            <span>{repliesCount === null ? "Discussão" : `${repliesCount} respostas`}</span>
+          </div>
+          {showReplies ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
 
-              <div className="space-y-2">
-                <Textarea
-                  value={newReply}
-                  onChange={(e) => setNewReply(e.target.value)}
-                  placeholder="Escreva uma resposta consciente..."
-                  className="min-h-[80px] resize-none"
-                />
-                <div className="flex justify-end">
-                  <Button
-                    size="sm"
-                    onClick={handleReply}
-                    disabled={submittingReply || !newReply.trim()}
-                  >
-                    {submittingReply ? "Publicando..." : "Responder"}
-                  </Button>
-                </div>
+        {showReplies && (
+          <div className="space-y-4 pt-2 border-t border-border/30">
+            {loadingReplies ? (
+              <div className="text-sm text-muted-foreground text-center py-4">
+                Carregando respostas...
               </div>
+            ) : repliesError ? (
+              <div className="text-sm text-destructive text-center py-4">{repliesError}</div>
+            ) : (
+              <div className="space-y-3">
+                {replies.length === 0 ? (
+                  <div className="text-sm text-muted-foreground text-center py-4">
+                    Seja o primeiro a responder
+                  </div>
+                ) : (
+                  replies.map((r) => (
+                    <div key={r.id} className="p-3 rounded-lg bg-muted/30 border border-border/20">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="h-3 w-3 text-primary" />
+                          </div>
+                          <span className="font-medium">{r.author}</span>
+                        </div>
+                        <span>
+                          {formatDistanceToNow(r.createdAt, {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap pl-8">
+                        {r.content}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Textarea
+                value={newReply}
+                onChange={(e) => setNewReply(e.target.value)}
+                placeholder="Escreva uma resposta..."
+                className="min-h-[60px] resize-none flex-1 bg-muted/30 border-border/30"
+              />
+              <Button
+                size="icon"
+                onClick={handleReply}
+                disabled={submittingReply || !newReply.trim()}
+                className="h-[60px] w-12 bg-primary hover:bg-primary/90"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

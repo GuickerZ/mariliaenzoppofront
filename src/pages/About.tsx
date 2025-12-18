@@ -73,16 +73,16 @@ export default function About() {
       <div className="space-y-12">
         {/* Hero Section */}
         <div className="text-center space-y-6">
-          <div className="inline-flex items-center space-x-2 bg-accent/20 px-4 py-2 rounded-full text-sm">
-            <Brain className="h-4 w-4 text-accent-foreground" />
-            <span className="text-accent-foreground">Manifesto digital</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+            <Brain className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Manifesto digital</span>
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Por que a Reflectis existe?
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            Por que a <span className="gradient-text">OFF</span> existe?
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed text-balance">
             Vivemos uma epidemia de dependência digital. As redes sociais tradicionais foram 
             projetadas para capturar e monetizar nossa atenção. Nós propomos uma alternativa consciente.
           </p>

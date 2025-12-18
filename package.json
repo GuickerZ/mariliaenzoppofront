@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Off - Rede Social Antidependência - Frontend",
+  "description": "OFF - Rede Social Antidependência - Frontend",
   "author": "Marília Marques",
   "scripts": {
     "dev": "vite",

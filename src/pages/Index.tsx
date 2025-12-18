@@ -12,6 +12,13 @@ import {
   TrendingUp,
   MessageCircle,
   AlertCircle,
+  Shield,
+  Clock,
+  Heart,
+  Sparkles,
+  ArrowRight,
+  CheckCircle,
+  Zap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -84,14 +91,10 @@ const Index = () => {
 
   if (isLoadingUser) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="container mx-auto px-4 py-16">
-          <Card>
-            <CardContent className="p-8 text-center">
-              Carregando...
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent animate-pulse" />
+          <p className="text-muted-foreground">Carregando...</p>
         </div>
       </div>
     );
@@ -99,39 +102,181 @@ const Index = () => {
 
   // LANDING PAGE (usuário não logado)
   if (!user) {
+    const features = [
+      {
+        icon: Shield,
+        title: "Sem algoritmos viciantes",
+        description: "Conteúdo cronológico, você controla o que vê",
+      },
+      {
+        icon: Clock,
+        title: "Limites conscientes",
+        description: "Defina seu tempo diário e receba lembretes",
+      },
+      {
+        icon: Heart,
+        title: "Feedback de qualidade",
+        description: "Avalie conteúdo por qualidade, não por popularidade",
+      },
+      {
+        icon: Users,
+        title: "Comunidades reais",
+        description: "Conecte-se com pessoas que compartilham seus valores",
+      },
+    ];
+
+    const stats = [
+      { value: "0", label: "Algoritmos manipulativos" },
+      { value: "100%", label: "Controle do usuário" },
+      { value: "∞", label: "Reflexões significativas" },
+    ];
+
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-hidden">
         <Header />
-        <div className="container mx-auto px-4 py-16 text-center space-y-8">
-          <div className="max-w-2xl mx-auto">
-            <div className="inline-flex items-center space-x-2 bg-primary/10 px-4 py-2 rounded-full text-sm mb-6">
-              <Brain className="h-4 w-4 text-primary" />
-              <span className="text-primary font-medium">
-                Rede social anti-dependência
-              </span>
-            </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              Off
-            </h1>
+        {/* Hero Section */}
+        <section className="relative min-h-[90vh] flex items-center justify-center">
+          {/* Background Effects */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-float" />
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/15 rounded-full blur-[100px] animate-float-slow" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[140px] animate-pulse-soft" />
+          </div>
 
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Uma plataforma que inverte a lógica das redes sociais tradicionais.
-              Sem curtidas públicas, sem feeds infinitos, sem algoritmos
-              viciantes.
-            </p>
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
 
-            <div className="flex justify-center">
-              <Button
-                size="lg"
-                className="px-8 bg-gradient-to-r from-primary to-accent"
-                asChild
-              >
-                <Link to="/login">Começar reflexão</Link>
-              </Button>
+          <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+
+
+              {/* Logo & Title */}
+              <div className="animate-fade-in-up">
+                <div className="flex justify-center">
+                  <img
+                    src="/off2.png"
+                    alt="OFF Logo"
+                    className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.4)] animate-float"
+                  />
+                </div>
+
+                <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-balance">
+                  A primeira rede social projetada para o seu{" "}
+                  <span className="text-foreground font-medium">bem-estar mental</span>.
+                  Sem feeds infinitos. Sem métricas viciantes.
+                </p>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+                <Button
+                  size="lg"
+                  className="px-8 h-14 text-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] animate-gradient hover:shadow-glow transition-all duration-300 group"
+                  asChild
+                >
+                  <Link to="/login" className="flex items-center gap-2">
+                    Começar agora
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 h-14 text-lg border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300"
+                  asChild
+                >
+                  <Link to="/about">Saiba mais</Link>
+                </Button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-8 pt-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold gradient-text">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-soft">
+            <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
+              <div className="w-1 h-2 bg-muted-foreground/50 rounded-full animate-pulse" />
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-24 md:py-32 relative">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Uma nova forma de se <span className="gradient-text">conectar</span>
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Projetado com princípios de design ético para promover uso consciente da tecnologia.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => (
+                <Card
+                  key={index}
+                  className="group glass-card-hover border-border/30 bg-card/50"
+                >
+                  <CardContent className="p-6 space-y-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <feature.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold">{feature.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <Card className="max-w-3xl mx-auto overflow-hidden border-0 bg-gradient-to-br from-card via-card to-primary/5">
+              <CardContent className="p-8 md:p-12 text-center space-y-6">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold">
+                  Pronto para uma experiência diferente?
+                </h2>
+                <p className="text-muted-foreground max-w-lg mx-auto">
+                  Junte-se a uma comunidade que valoriza qualidade sobre quantidade,
+                  profundidade sobre superficialidade.
+                </p>
+                <Button
+                  size="lg"
+                  className="px-8 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                  asChild
+                >
+                  <Link to="/login">Criar conta gratuita</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-8 border-t border-border/30">
+          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+            <p>OFF © {new Date().getFullYear()} — Feito com consciência digital</p>
+          </div>
+        </footer>
       </div>
     );
   }

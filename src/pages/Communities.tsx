@@ -65,13 +65,16 @@ export default function Communities() {
       <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Comunidades</h1>
-            <p className="text-muted-foreground">
+          <div className="space-y-1">
+            <h1 className="text-2xl md:text-3xl font-bold gradient-text">Comunidades</h1>
+            <p className="text-muted-foreground text-sm">
               Encontre espaços para reflexão e discussão consciente
             </p>
           </div>
-          <Button className="flex items-center space-x-2" onClick={() => setOpenCreate(true)}>
+          <Button 
+            className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90" 
+            onClick={() => setOpenCreate(true)}
+          >
             <Plus className="h-4 w-4" />
             <span>Criar comunidade</span>
           </Button>

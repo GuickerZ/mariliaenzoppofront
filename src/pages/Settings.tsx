@@ -95,11 +95,13 @@ export default function Settings() {
     <MainLayout showTimeTracker={false}>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center space-x-3">
-          <SettingsIcon className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-3xl font-bold">Configurações</h1>
-            <p className="text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <SettingsIcon className="h-7 w-7 text-primary" />
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-2xl md:text-3xl font-bold gradient-text">Configurações</h1>
+            <p className="text-muted-foreground text-sm">
               Personalize sua experiência consciente
             </p>
           </div>
