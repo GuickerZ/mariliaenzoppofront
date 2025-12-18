@@ -51,7 +51,7 @@ export function Header() {
           <img 
             src="/off2.png" 
             alt="OFF" 
-            className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-xl shadow-md group-hover:shadow-glow-sm transition-shadow duration-300" 
+            className="h-10 w-10 sm:h-12 sm:w-12 object-contain rounded-xl shadow-md group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all duration-300" 
           />
         </Link>
 

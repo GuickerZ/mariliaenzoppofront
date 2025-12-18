@@ -93,26 +93,26 @@ export default function Settings() {
 
   return (
     <MainLayout showTimeTracker={false}>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-            <SettingsIcon className="h-7 w-7 text-primary" />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
+            <SettingsIcon className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
           </div>
-          <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-bold gradient-text">Configurações</h1>
-            <p className="text-muted-foreground text-sm">
-              Personalize sua experiência consciente
+          <div className="space-y-0.5 sm:space-y-1">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text">Configurações</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">
+              Personalize sua experiência
             </p>
           </div>
         </div>
 
-        <Tabs defaultValue="time" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="time">Tempo</TabsTrigger>
-            <TabsTrigger value="profile">Perfil</TabsTrigger>
-            <TabsTrigger value="experience">Experiência</TabsTrigger>
-            <TabsTrigger value="privacy">Privacidade</TabsTrigger>
+        <Tabs defaultValue="time" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="time" className="text-xs sm:text-sm py-2 sm:py-2.5">Tempo</TabsTrigger>
+            <TabsTrigger value="profile" className="text-xs sm:text-sm py-2 sm:py-2.5">Perfil</TabsTrigger>
+            <TabsTrigger value="experience" className="text-xs sm:text-sm py-2 sm:py-2.5">Exp.</TabsTrigger>
+            <TabsTrigger value="privacy" className="text-xs sm:text-sm py-2 sm:py-2.5">Privac.</TabsTrigger>
           </TabsList>
 
           {/* Tempo */}
@@ -325,8 +325,8 @@ export default function Settings() {
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end">
-          <Button onClick={handleSaveSettings} size="lg">
+        <div className="flex justify-center sm:justify-end">
+          <Button onClick={handleSaveSettings} size="lg" className="w-full sm:w-auto">
             <Save className="h-4 w-4 mr-2" />
             Salvar configurações
           </Button>

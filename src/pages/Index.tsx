@@ -136,7 +136,7 @@ const Index = () => {
         <Header />
 
         {/* Hero Section */}
-        <section className="relative min-h-[90vh] flex items-center justify-center">
+        <section className="relative min-h-[70vh] sm:min-h-[85vh] flex items-center justify-center py-6 sm:py-0">
           {/* Background Effects */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-float" />
@@ -148,20 +148,20 @@ const Index = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
 
           <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
+            <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
 
 
               {/* Logo & Title */}
-              <div className="animate-fade-in-up">
-                <div className="flex justify-center">
+              <div>
+                <div className="flex justify-center mb-4 sm:mb-6">
                   <img
                     src="/off2.png"
                     alt="OFF Logo"
-                    className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.4)] animate-float"
+                    className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]"
                   />
                 </div>
 
-                <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-balance">
+                <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-balance px-2">
                   A primeira rede social projetada para o seu{" "}
                   <span className="text-foreground font-medium">bem-estar mental</span>.
                   Sem feeds infinitos. Sem métricas viciantes.
@@ -169,10 +169,10 @@ const Index = () => {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-6 sm:pt-4">
                 <Button
                   size="lg"
-                  className="px-8 h-14 text-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] animate-gradient hover:shadow-glow transition-all duration-300 group"
+                  className="px-8 h-12 sm:h-14 text-base sm:text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-all duration-300 group"
                   asChild
                 >
                   <Link to="/login" className="flex items-center gap-2">
@@ -183,7 +183,7 @@ const Index = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="px-8 h-14 text-lg border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300"
+                  className="px-8 h-12 sm:h-14 text-base sm:text-lg border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300"
                   asChild
                 >
                   <Link to="/about">Saiba mais</Link>
@@ -191,30 +191,30 @@ const Index = () => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-8 pt-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-8 sm:pt-12 max-w-lg mx-auto">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold gradient-text">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">{stat.value}</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground mt-1">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-soft">
+          {/* Scroll Indicator - Hidden on mobile */}
+          <div className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2">
             <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
-              <div className="w-1 h-2 bg-muted-foreground/50 rounded-full animate-pulse" />
+              <div className="w-1 h-2 bg-muted-foreground/50 rounded-full" />
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section className="py-24 md:py-32 relative">
+        <section className="py-8 sm:py-16 md:py-24 relative">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-16">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                 Uma nova forma de se <span className="gradient-text">conectar</span>
               </h2>
               <p className="text-lg text-muted-foreground">
@@ -222,7 +222,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {features.map((feature, index) => (
                 <Card
                   key={index}
@@ -244,11 +244,11 @@ const Index = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 relative">
+        <section className="py-8 sm:py-16 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
             <Card className="max-w-3xl mx-auto overflow-hidden border-0 bg-gradient-to-br from-card via-card to-primary/5">
-              <CardContent className="p-8 md:p-12 text-center space-y-6">
+              <CardContent className="p-6 sm:p-8 md:p-12 text-center space-y-4 sm:space-y-6">
                 <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                   <Zap className="w-8 h-8 text-white" />
                 </div>
@@ -286,24 +286,24 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <div className="flex gap-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl">
+        <div className="flex gap-4 sm:gap-6">
           <HomeSidebar />
 
-          <div className="flex-1 max-w-2xl space-y-6">
+          <div className="flex-1 max-w-2xl space-y-4 sm:space-y-6">
             <Card className="bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 border-primary/20">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <span className="text-lg font-bold text-primary-foreground">
-                      {user.email.charAt(0)}
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0">
+                    <span className="text-base sm:text-lg font-bold text-primary-foreground">
+                      {user.email.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <div>
-                    <h2 className="text-lg font-semibold">
-                      Olá, {user.email}!
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-lg font-semibold truncate">
+                      Olá, {user.email.split('@')[0]}!
                     </h2>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       O que está refletindo hoje?
                     </p>
                   </div>
@@ -329,16 +329,16 @@ const Index = () => {
               </Card>
             )}
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <h2 className="text-xl font-semibold">Feed consciente</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <h2 className="text-lg sm:text-xl font-semibold">Feed consciente</h2>
                 <Badge variant="secondary" className="text-xs">
-                  Limitado a 5 posts
+                  5 posts
                 </Badge>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <div className="hidden sm:flex items-center space-x-2 text-sm text-muted-foreground">
                 <TrendingUp className="h-4 w-4" />
-                <span>Ordenado cronologicamente</span>
+                <span>Cronológico</span>
               </div>
             </div>
 
@@ -349,24 +349,24 @@ const Index = () => {
             </div>
 
             <Card className="border-dashed bg-muted/30">
-              <CardContent className="p-6 text-center space-y-3">
+              <CardContent className="p-4 sm:p-6 text-center space-y-3">
                 <Brain className="h-8 w-8 text-muted-foreground mx-auto" />
                 <h3 className="font-medium">Fim do feed consciente</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
                   Você viu todas as reflexões de hoje. Que tal processar o que
                   leu, ou explorar uma comunidade específica?
                 </p>
-                <div className="flex gap-2 justify-center pt-2">
+                <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/communities">
                       <MessageCircle className="h-4 w-4 mr-2" />
-                      Explorar comunidades
+                      Comunidades
                     </Link>
                   </Button>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/profile">
                       <Users className="h-4 w-4 mr-2" />
-                      Ver perfil
+                      Perfil
                     </Link>
                   </Button>
                 </div>

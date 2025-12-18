@@ -62,7 +62,7 @@ export function HomeSidebar() {
   }, []);
 
   return (
-    <div className="w-80 space-y-6 sticky top-20 h-fit">
+    <div className="hidden lg:block w-80 space-y-6 sticky top-20 h-fit">
       {/* Uso consciente */}
       {user && (
         <Card className="border-primary/20">

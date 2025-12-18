@@ -70,19 +70,19 @@ const testimonials = [
 export default function About() {
   return (
     <MainLayout showTimeTracker={false}>
-      <div className="space-y-12">
+      <div className="space-y-6 sm:space-y-10">
         {/* Hero Section */}
-        <div className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+        <div className="text-center space-y-4 sm:space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
             <Brain className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Manifesto digital</span>
+            <span className="text-xs sm:text-sm font-medium text-primary">Manifesto digital</span>
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
             Por que a <span className="gradient-text">OFF</span> existe?
           </h1>
           
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed text-balance">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed text-balance px-2">
             Vivemos uma epidemia de dependência digital. As redes sociais tradicionais foram 
             projetadas para capturar e monetizar nossa atenção. Nós propomos uma alternativa consciente.
           </p>
@@ -94,7 +94,7 @@ export default function About() {
             <CardTitle className="text-xl text-destructive">O problema que enfrentamos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-3">
                 <h3 className="font-semibold">Vício por design</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
@@ -119,7 +119,7 @@ export default function About() {
         </Card>
 
         {/* Our Solution */}
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-4">Nossa solução</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -128,7 +128,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {principles.map((principle, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -151,7 +151,7 @@ export default function About() {
             <CardTitle className="text-xl">Funcionalidades conscientes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 gap-2 sm:gap-3">
               {features.map((feature, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
@@ -163,7 +163,7 @@ export default function About() {
         </Card>
 
         {/* Testimonials */}
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-4">O que nossa comunidade diz</h2>
             <p className="text-muted-foreground">
@@ -171,7 +171,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {testimonials.map((testimonial, index) => (
               <Card key={index}>
                 <CardContent className="p-6">
@@ -191,7 +191,7 @@ export default function About() {
 
         {/* Our Mission */}
         <Card className="bg-gradient-to-r from-accent/10 to-primary/10 border-none">
-          <CardContent className="p-8 text-center space-y-6">
+          <CardContent className="p-5 sm:p-8 text-center space-y-4 sm:space-y-6">
             <Target className="h-12 w-12 text-primary mx-auto" />
             <h2 className="text-2xl font-bold">Nossa missão</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -203,19 +203,19 @@ export default function About() {
         </Card>
 
         {/* Join Movement */}
-        <div className="text-center space-y-6 py-8">
-          <h2 className="text-3xl font-bold">Junte-se ao movimento</h2>
+        <div className="text-center space-y-4 sm:space-y-6 py-4 sm:py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold">Junte-se ao movimento</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             A mudança começa com cada indivíduo que escolhe consciência sobre automação, 
             profundidade sobre superficialidade, bem-estar sobre engajamento.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <Button size="lg" className="w-full sm:w-auto px-8">
               Começar agora
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto">
               Explorar comunidades
             </Button>
           </div>

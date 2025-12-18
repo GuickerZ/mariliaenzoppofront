@@ -92,32 +92,32 @@ const Login = () => {
       {/* Back Button */}
       <Link
         to="/"
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         <span>Voltar</span>
       </Link>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-md px-4 py-8 animate-fade-in-up">
+      <div className="relative z-10 w-full max-w-md px-4 py-6 sm:py-8">
         {/* Logo Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-block">
             <img
               src="/off2.png"
               alt="OFF Logo"
-              className="w-24 h-24 mx-auto object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:scale-105 transition-transform"
+              className="w-20 h-20 sm:w-24 sm:h-24 mx-auto object-contain drop-shadow-[0_0_20px_rgba(168,85,247,0.3)]"
             />
           </Link>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
             Rede social anti-dependência
           </p>
         </div>
 
         {/* Login Card */}
         <Card className="glass-card border-border/30 shadow-xl">
-          <CardHeader className="space-y-1 pb-6 text-center">
-            <CardTitle className="text-2xl font-bold">
+          <CardHeader className="space-y-1 pb-4 sm:pb-6 text-center">
+            <CardTitle className="text-xl sm:text-2xl font-bold">
               {isLogin ? "Bem-vindo de volta" : "Criar sua conta"}
             </CardTitle>
             <CardDescription>
@@ -127,7 +127,7 @@ const Login = () => {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4 sm:space-y-6">
             {/* Error Message */}
             {errorMessage && (
               <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm text-center animate-fade-in">
@@ -210,7 +210,7 @@ const Login = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] animate-gradient hover:shadow-glow disabled:opacity-50 transition-all duration-300"
+                className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-secondary hover:opacity-90 disabled:opacity-50 transition-all duration-300"
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
@@ -248,7 +248,7 @@ const Login = () => {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground mt-8">
+        <p className="text-center text-xs text-muted-foreground mt-6 sm:mt-8 px-2">
           Ao continuar, você concorda com nossos{" "}
           <Link to="/about" className="underline hover:text-foreground transition-colors">
             termos de uso consciente

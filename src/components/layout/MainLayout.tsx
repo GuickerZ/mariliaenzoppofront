@@ -56,9 +56,9 @@ export function MainLayout({ children, showTimeTracker = true }: MainLayoutProps
       )}
 
       <main className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className={`${showTimeTracker && user ? 'grid grid-cols-1 lg:grid-cols-4 gap-8' : 'max-w-4xl mx-auto'}`}>
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+          <div className={`${showTimeTracker && user ? 'lg:col-span-3' : ''} space-y-4 sm:space-y-6`}>
             {children}
           </div>
           
