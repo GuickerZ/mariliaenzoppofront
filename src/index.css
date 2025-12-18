@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Modern social media inspired palette */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    /* Vibrant primary - Purple */
+    --primary: 270 100% 70%;
+    --primary-foreground: 0 0% 7%;
+
+    /* Secondary - Pink accent */
+    --secondary: 330 100% 75%;
+    --secondary-foreground: 0 0% 7%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+
+    /* Yellow accent */
+    --accent: 45 100% 65%;
+    --accent-foreground: 0 0% 7%;
+
+    /* Destructive - keeping similar */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 95%;
+
+    /* Modern borders and inputs */
+    --border: 0 0% 25%;
+    --input: 0 0% 15%;
+    --ring: 270 100% 70%;
+
+    /* Social media inspired gradients */
+    --gradient-social: linear-gradient(135deg, hsl(270 100% 70%), hsl(330 100% 75%), hsl(45 100% 65%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 7%), hsl(0 0% 12%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 12%), hsl(0 0% 8%));
+    
+    /* Modern shadows */
+    --shadow-soft: 0 4px 20px hsl(270 100% 70% / 0.1);
+    --shadow-medium: 0 8px 40px hsl(270 100% 70% / 0.15);
+    --shadow-glow: 0 0 30px hsl(270 100% 70% / 0.3);
+    
+    /* Smooth modern transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode with calming, less stimulating colors */
+    --background: 216 20% 8%;
+    --foreground: 210 15% 85%;
+
+    --card: 216 18% 12%;
+    --card-foreground: 210 15% 85%;
+
+    --popover: 216 18% 12%;
+    --popover-foreground: 210 15% 85%;
+
+    --primary: 200 25% 55%;
+    --primary-foreground: 216 20% 8%;
+
+    --secondary: 216 15% 15%;
+    --secondary-foreground: 210 15% 75%;
+
+    --muted: 216 15% 18%;
+    --muted-foreground: 216 8% 65%;
+
+    --accent: 165 25% 25%;
+    --accent-foreground: 165 35% 85%;
+
+    --destructive: 15 55% 55%;
+    --destructive-foreground: 210 15% 85%;
+
+    --border: 216 15% 20%;
+    --input: 216 15% 22%;
+    --ring: 200 25% 65%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    line-height: 1.6;
+  }
+  
+  /* Mindful typography */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  
+  /* Reduce motion for those who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Gentle focus states */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+}
