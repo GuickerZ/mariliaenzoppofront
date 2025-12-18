@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { FeedbackButtons } from "@/components/ui/feedback-buttons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Edit, MessageCircle, ThumbsUp, ThumbsDown, User, ChevronDown, ChevronUp, Send, Eye } from "lucide-react";
+import { Clock, Edit, MessageCircle, ThumbsUp, ThumbsDown, User, ChevronDown, ChevronUp, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useState } from "react";

@@ -271,7 +271,7 @@ export default function Communities() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredCommunities.map((community: any, index: number) => (
+              {filteredCommunities.map((community: Community, index: number) => (
                 <CommunityCard
                   key={index}
                   name={community.name}

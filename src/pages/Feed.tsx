@@ -5,7 +5,7 @@ import { PostForm } from "@/components/forms/PostForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RefreshCw, TrendingUp, Clock, Users, Plus, SlidersHorizontal, Loader2, Filter } from "lucide-react";
+import { RefreshCw, TrendingUp, Clock, Users, Plus, Filter } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { listCommunities, type Community } from "@/api/community";
@@ -84,19 +84,21 @@ export default function Feed() {
   const filteredPosts = posts.filter(post => {
     if (filterCommunity === "all") return true;
     if (filterCommunity === "joined") {
-      return user?.communities.includes(post.community);
+      return user?.communities.includes(post.community ?? "");
     }
-    return post.community === filterCommunity;
+    return (post.community ?? "") === filterCommunity;
   });
 
   const sortedPosts = [...filteredPosts].sort((a, b) => {
+    const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+    const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
     switch (sortBy) {
       case "recent":
-        return b.createdAt.getTime() - a.createdAt.getTime();
+        return dateB.getTime() - dateA.getTime();
       case "oldest":
-        return a.createdAt.getTime() - b.createdAt.getTime();
+        return dateA.getTime() - dateB.getTime();
       case "readTime":
-        return a.readTime - b.readTime;
+        return (a.readTime ?? 1) - (b.readTime ?? 1);
       default:
         return 0;
     }

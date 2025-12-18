@@ -32,7 +32,17 @@ const Index = () => {
   const { user, isLoadingUser } = useUser();
   const { isLimitReached } = useTimeTracking();
 
-  const [feedPosts, setFeedPosts] = useState<any[]>([]);
+  const [feedPosts, setFeedPosts] = useState<{
+    id: string;
+    author: string;
+    content: string;
+    createdAt: Date;
+    readTime: number;
+    qualidade: number;
+    naoGostou: number;
+    hasLiked: boolean;
+    hasDisliked: boolean;
+  }[]>([]);
   const [stats, setStats] = useState<{
     totalPosts: number;
     totalCommunities: number;
@@ -125,7 +135,7 @@ const Index = () => {
       },
     ];
 
-    const stats = [
+    const landingStats = [
       { value: "0", label: "Algoritmos manipulativos" },
       { value: "100%", label: "Controle do usuário" },
       { value: "∞", label: "Reflexões significativas" },
@@ -192,7 +202,7 @@ const Index = () => {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-8 sm:pt-12 max-w-lg mx-auto">
-                {stats.map((stat, index) => (
+                {landingStats.map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">{stat.value}</div>
                     <div className="text-xs sm:text-sm text-muted-foreground mt-1">{stat.label}</div>
@@ -333,7 +343,7 @@ const Index = () => {
               <div className="flex items-center gap-2 sm:gap-3">
                 <h2 className="text-lg sm:text-xl font-semibold">Feed consciente</h2>
                 <Badge variant="secondary" className="text-xs">
-                  5 posts
+                  {visiblePosts.length} posts
                 </Badge>
               </div>
               <div className="hidden sm:flex items-center space-x-2 text-sm text-muted-foreground">
