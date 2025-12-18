@@ -35,3 +35,18 @@ export async function getMyInsights(): Promise<MyInsights> {
   const res = await api.get("/me/insights");
   return res.data as MyInsights;
 }
+
+export interface MyCommunity {
+  id: string;
+  name: string;
+}
+
+export async function getMyCommunities(): Promise<MyCommunity[]> {
+  try {
+    const res = await api.get("/me/communities");
+    return res.data as MyCommunity[];
+  } catch {
+    // Fallback: se a API não existir, retorna array vazio
+    return [];
+  }
+}

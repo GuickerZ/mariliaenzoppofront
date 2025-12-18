@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getUser } from '@/api/authApi';
+import { getMyCommunities } from '@/api/me';
 
 interface User {
   id: string;
@@ -25,6 +26,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
 
   useEffect(() => {
+    let mounted = true;
+    
     const loadUser = async () => {
       try {
         setIsLoadingUser(true);
@@ -34,24 +37,35 @@ export function UserProvider({ children }: { children: ReactNode }) {
           return;
         }
         const me = await getUser();
+        if (!mounted) return;
         if (!me) {
           setUser(null);
           return;
         }
+        
+        // Busca as comunidades do usuário em paralelo
+        const myCommunities = await getMyCommunities();
+        if (!mounted) return;
+        
+        // Extrai apenas os nomes das comunidades
+        const communityNames = myCommunities.map(c => c.name);
+        
         setUser({
           id: String(me.id),
           email: me.email,
           joinedAt: new Date(),
-          communities: [],
+          communities: communityNames,
           dailyTimeLimit: 30,
         });
       } catch {
-        setUser(null);
+        if (mounted) setUser(null);
       } finally {
-        setIsLoadingUser(false);
+        if (mounted) setIsLoadingUser(false);
       }
     };
     loadUser();
+    
+    return () => { mounted = false; };
   }, []);
 
   const login = (userData: User) => {

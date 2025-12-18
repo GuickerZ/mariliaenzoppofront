@@ -8,6 +8,7 @@ import { joinCommunity, listCommunityPosts, getCommunity, createCommunityPost, t
 import type { PostDTO } from "@/api/posts";
 import { PostCard } from "@/components/post/PostCard";
 import { useUser } from "@/contexts/UserContext";
+import { getMyCommunities } from "@/api/me";
 import { MessageSquare, Users, ArrowLeft, Plus } from "lucide-react";
 import { PostForm } from "@/components/forms/PostForm";
 
@@ -56,6 +57,11 @@ export default function CommunityDetail() {
       setJoining(true);
       await joinCommunity(id);
       setCommunity(prev => prev ? { ...prev, isMember: true } : prev);
+      
+      // Atualiza as comunidades do usuário no contexto
+      const myCommunities = await getMyCommunities();
+      const communityNames = myCommunities.map(c => c.name);
+      updateUser({ communities: communityNames });
     } finally {
       setJoining(false);
     }

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import { auth, getUser, register } from "@/api/authApi";
+import { getMyCommunities } from "@/api/me";
 import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 
@@ -84,11 +85,15 @@ const Login = () => {
       localStorage.removeItem("timeAlertShownAt");
       localStorage.removeItem("autoLoggedOutAt");
       
+      // Busca as comunidades do usuário
+      const myCommunities = await getMyCommunities();
+      const communityNames = myCommunities.map(c => c.name);
+      
       login({
         id: String(me.id),
         email: me.email,
         joinedAt: new Date(),
-        communities: [],
+        communities: communityNames,
         dailyTimeLimit: 30,
       });
       
