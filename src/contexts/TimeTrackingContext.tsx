@@ -3,6 +3,8 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useRef,
   ReactNode,
 } from "react";
 
@@ -17,127 +19,227 @@ interface TimeTrackingContextType {
   updateDailyLimit: (limit: number) => void;
 }
 
+interface StoredData {
+  timeSpent: number;
+  dailyLimit: number;
+  lastActiveDate: string;
+}
+
 const TimeTrackingContext =
   createContext<TimeTrackingContextType | undefined>(undefined);
 
 const STORAGE_KEY = "timeTrackingData";
+const MIN_LIMIT = 1;
+const MAX_LIMIT = 480;
+
+// Função helper para ler do localStorage de forma segura
+function getStoredData(): StoredData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as StoredData;
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    return null;
+  }
+}
+
+// Função helper para calcular tempo até meia-noite
+function calculateTimeUntilMidnight(): number {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  return Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
+}
+
+// Função helper para validar limite
+function validateLimit(limit: number): number {
+  return Math.max(MIN_LIMIT, Math.min(MAX_LIMIT, Math.floor(limit)));
+}
 
 export function TimeTrackingProvider({ children }: { children: ReactNode }) {
-  const [timeSpent, setTimeSpent] = useState(0);
-  const [dailyLimit, setDailyLimit] = useState(30);
-  const [isActive, setIsActive] = useState(true);
-  const [lastActiveDate, setLastActiveDate] = useState(
-    new Date().toDateString()
-  );
-  const [timeUntilReset, setTimeUntilReset] = useState(0);
-
-  const limitInSeconds = dailyLimit * 60;
-  const isLimitReached = timeSpent >= limitInSeconds;
-
-  /* =====================
-     RESTAURA AO CARREGAR
-     ===================== */
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-
-    try {
-      const data = JSON.parse(raw);
-      const today = new Date().toDateString();
-
-      if (data.lastActiveDate === today) {
-        setTimeSpent(Math.min(data.timeSpent ?? 0, limitInSeconds));
-      } else {
-        setTimeSpent(0);
-      }
-
-      setLastActiveDate(today);
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
+  // Estado inicializado de forma lazy com localStorage
+  const [state, setState] = useState(() => {
+    const today = new Date().toDateString();
+    const stored = getStoredData();
+    
+    if (stored && stored.lastActiveDate === today) {
+      return {
+        timeSpent: stored.timeSpent ?? 0,
+        dailyLimit: validateLimit(stored.dailyLimit ?? 30),
+        lastActiveDate: today,
+      };
     }
-  }, [limitInSeconds]);
+    
+    return {
+      timeSpent: 0,
+      dailyLimit: stored?.dailyLimit ? validateLimit(stored.dailyLimit) : 30,
+      lastActiveDate: today,
+    };
+  });
 
-  /* =====================
-     RESET AUTOMÁTICO À MEIA-NOITE
-     ===================== */
+  const [isActive, setIsActive] = useState(true);
+  const [timeUntilReset, setTimeUntilReset] = useState(calculateTimeUntilMidnight);
+  
+  // Refs para evitar race conditions
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Valores derivados
+  const limitInSeconds = state.dailyLimit * 60;
+  const isLimitReached = state.timeSpent >= limitInSeconds;
+
+  // Salvar no localStorage com debounce
+  const saveToStorage = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        timeSpent: state.timeSpent,
+        dailyLimit: state.dailyLimit,
+        lastActiveDate: state.lastActiveDate,
+      }));
+    }, 500);
+  }, [state]);
+
+  // Salvar quando estado muda
   useEffect(() => {
-    const interval = setInterval(() => {
-      const today = new Date().toDateString();
+    saveToStorage();
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [saveToStorage]);
 
-      if (today !== lastActiveDate) {
-        setTimeSpent(0);
-        setLastActiveDate(today);
-        setIsActive(true);
-      }
-    }, 30_000);
-
-    return () => clearInterval(interval);
-  }, [lastActiveDate]);
-
-  /* =====================
-     CONTADOR CONTROLADO
-     ===================== */
+  // Contador principal
   useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (!isActive || isLimitReached) return;
 
-    const interval = setInterval(() => {
-      setTimeSpent((prev) => Math.min(prev + 1, limitInSeconds));
+    intervalRef.current = setInterval(() => {
+      setState(prev => {
+        const newTimeSpent = prev.timeSpent + 1;
+        const maxTime = prev.dailyLimit * 60;
+        
+        if (newTimeSpent >= maxTime) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          return { ...prev, timeSpent: maxTime };
+        }
+        
+        return { ...prev, timeSpent: newTimeSpent };
+      });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [isActive, isLimitReached, limitInSeconds]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isActive, isLimitReached]);
 
-  /* =====================
-     SALVA SEMPRE
-     ===================== */
+  // Verificar mudança de dia e visibilidade
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        timeSpent,
-        dailyLimit,
-        lastActiveDate,
-        lastTick: Date.now(),
-      })
-    );
-  }, [timeSpent, dailyLimit, lastActiveDate]);
-
-  // Calcular tempo até reset (meia-noite)
-  useEffect(() => {
-    const calculateTimeUntilReset = () => {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
-      return Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
+    const checkDate = () => {
+      const today = new Date().toDateString();
+      setState(prev => {
+        if (prev.lastActiveDate !== today) {
+          return { ...prev, timeSpent: 0, lastActiveDate: today };
+        }
+        return prev;
+      });
+      setTimeUntilReset(calculateTimeUntilMidnight());
     };
 
-    setTimeUntilReset(calculateTimeUntilReset());
+    // Verificar ao voltar para a aba
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        checkDate();
+        if (!isLimitReached) setIsActive(true);
+      } else {
+        setIsActive(false);
+      }
+    };
 
+    // Sincronização entre abas
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          const data = JSON.parse(e.newValue) as StoredData;
+          const today = new Date().toDateString();
+          if (data.lastActiveDate === today) {
+            setState(prev => ({
+              ...prev,
+              timeSpent: Math.max(prev.timeSpent, data.timeSpent),
+              dailyLimit: validateLimit(data.dailyLimit),
+            }));
+          }
+        } catch { /* ignore */ }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("storage", handleStorage);
+
+    // Verificar a cada 10 segundos
+    const dateCheckInterval = setInterval(checkDate, 10000);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("storage", handleStorage);
+      clearInterval(dateCheckInterval);
+    };
+  }, [isLimitReached]);
+
+  // Atualizar contador regressivo
+  useEffect(() => {
     const interval = setInterval(() => {
-      setTimeUntilReset(calculateTimeUntilReset());
-    }, 1000);
+      setTimeUntilReset(calculateTimeUntilMidnight());
+    }, 10000); // Atualiza a cada 10 segundos
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Callbacks memoizados
+  const startSession = useCallback(() => {
+    if (!isLimitReached) setIsActive(true);
+  }, [isLimitReached]);
+
+  const pauseSession = useCallback(() => {
+    setIsActive(false);
+  }, []);
+
+  const resetDaily = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      timeSpent: 0,
+      lastActiveDate: new Date().toDateString(),
+    }));
+    setIsActive(true);
+  }, []);
+
+  const updateDailyLimit = useCallback((limit: number) => {
+    const validLimit = validateLimit(limit);
+    setState(prev => ({ ...prev, dailyLimit: validLimit }));
   }, []);
 
   return (
     <TimeTrackingContext.Provider
       value={{
-        timeSpent,
-        dailyLimit,
+        timeSpent: state.timeSpent,
+        dailyLimit: state.dailyLimit,
         isLimitReached,
         timeUntilReset,
-        startSession: () => {
-          if (!isLimitReached) setIsActive(true);
-        },
-        pauseSession: () => setIsActive(false),
-        resetDaily: () => {
-          setTimeSpent(0);
-        },
-        updateDailyLimit: (limit: number) => {
-          setDailyLimit(limit);
-        },
+        startSession,
+        pauseSession,
+        resetDaily,
+        updateDailyLimit,
       }}
     >
       {children}
@@ -148,9 +250,7 @@ export function TimeTrackingProvider({ children }: { children: ReactNode }) {
 export function useTimeTracking() {
   const ctx = useContext(TimeTrackingContext);
   if (!ctx) {
-    throw new Error(
-      "useTimeTracking must ser usado dentro do Provider"
-    );
+    throw new Error("useTimeTracking deve ser usado dentro do TimeTrackingProvider");
   }
   return ctx;
 }
